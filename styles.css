@@ -4,6 +4,9 @@
     "Lucida Grande", "Lucida Sans", Arial, sans-serif;
 }
 
+body {
+}
+
 .header {
   display: flex;
   flex-direction: column;
@@ -25,7 +28,7 @@
   height: 500px;
   width: 400px;
   border: solid white 2px;
-  margin: auto;
+  margin: 100px auto;
   display: grid;
   grid-template-areas: "v v v v"
                        "s s s p"
@@ -35,8 +38,10 @@
                        "m m m p";
 }
 
-.visor {
+.display {
+  text-align: end;
   grid-area: v;
+  padding: 8px;
   width: 80%;
   margin: auto;
   background-color: aquamarine;
