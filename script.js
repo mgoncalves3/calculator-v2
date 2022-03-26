@@ -1,13 +1,16 @@
 let updateDisplay = (e) => {
   let currentDisplay;
-  if (defaultState) {
+  if (result == undefined && defaultState) {
+    if (e.target.value === "0") {
+      display.textContent = "0";
+      return;
+    }
     currentDisplay = ``;
   } else {
     currentDisplay = `${display.textContent}`;
   }
   defaultState = false;
-  let nextDisplay = `${currentDisplay}${e.target.value}`;
-  display.textContent = nextDisplay;
+  display.textContent = `${currentDisplay}${e.target.value}`;
 };
 
 let defaultState = true;
@@ -16,6 +19,9 @@ const display = document.getElementById("display");
 const clearButton = document.getElementById("clear");
 const numberButtons = document.getElementsByClassName("number");
 const addButton = document.getElementById("add");
+const subButton = document.getElementById("subtract");
+const multiplyButton = document.getElementById("multiply");
+const divideButton = document.getElementById("divide");
 const equalsButton = document.getElementById("equals");
 
 for (const button of numberButtons) {
@@ -24,53 +30,63 @@ for (const button of numberButtons) {
 
 const reset = () => {
   display.textContent = "0";
-  num1 = "", num2 = "", operation = "", result = "";
+  (num1 = undefined),
+  (num2 = undefined),
+  (operation = undefined),
+  (result = undefined);
   defaultState = true;
 };
 
 clearButton.addEventListener("click", reset);
 
-let num1 = "";
-let operation = "";
-let num2 = "";
-let result = "";
+let num1;
+let operation;
+let num2;
+let result;
 
 // Operations
 const add = () => {
-  num1 = parseInt(getCurrentDisplay());
+  num1 = getCurrentDisplay();
   operation = "+";
   defaultState = true;
 };
 
 const subtract = () => {
-  num1 = parseInt(getCurrentDisplay());
+  num1 = getCurrentDisplay();
   operation = "-";
   defaultState = true;
 };
 
 const multiply = () => {
-  num1 = parseInt(getCurrentDisplay());
+  num1 = getCurrentDisplay();
   operation = "*";
   defaultState = true;
 };
 
 const divide = () => {
-  num1 = parseInt(getCurrentDisplay());
+  num1 = getCurrentDisplay();
   operation = "/";
   defaultState = true;
 };
 
 const getCurrentDisplay = () => {
-  return display.textContent;
+  return parseInt(display.textContent);
 };
 
-const updateFinalResult = (val = result) => {
-  display.textContent = `${val}`;
+const updateFinalResult = () => {
+  if (result === Infinity) {
+    display.textContent = "ERROR";
+    num1 = undefined;
+  } else {
+    display.textContent = result;
+    num1 = result;
+  }
+  (num2 = undefined), (operation = undefined), (result = undefined);
   defaultState = true;
 };
 
 const evaluate = () => {
-  num2 = parseInt(getCurrentDisplay());
+  num2 = getCurrentDisplay();
   switch (operation) {
     case "+":
       result = num1 + num2;
@@ -92,4 +108,7 @@ const evaluate = () => {
 };
 
 addButton.addEventListener("click", add);
+subButton.addEventListener("click", subtract);
+multiplyButton.addEventListener("click", multiply);
+divideButton.addEventListener("click", divide);
 equalsButton.addEventListener("click", evaluate);
