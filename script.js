@@ -1,16 +1,17 @@
 let updateDisplay = (e) => {
   let currentDisplay;
   if (result == undefined && defaultState) {
+    // Ignore "0" if no other number was pressed
     if (e.target.value === "0") {
-      display.textContent = "0";
+      display.innerText = "0";
       return;
     }
     currentDisplay = ``;
   } else {
-    currentDisplay = `${display.textContent}`;
+    currentDisplay = `${display.innerText}`;
   }
   defaultState = false;
-  display.textContent = `${currentDisplay}${e.target.value}`;
+  display.innerText = `${currentDisplay}${e.target.value}`;
 };
 
 let defaultState = true;
@@ -23,17 +24,18 @@ const subButton = document.getElementById("subtract");
 const multiplyButton = document.getElementById("multiply");
 const divideButton = document.getElementById("divide");
 const equalsButton = document.getElementById("equals");
+const signButton = document.getElementById("sign");
 
 for (const button of numberButtons) {
   button.addEventListener("click", updateDisplay);
 }
 
 const reset = () => {
-  display.textContent = "0";
+  display.innerText = "0";
   (num1 = undefined),
-  (num2 = undefined),
-  (operation = undefined),
-  (result = undefined);
+    (num2 = undefined),
+    (operation = undefined),
+    (result = undefined);
   defaultState = true;
 };
 
@@ -70,15 +72,16 @@ const divide = () => {
 };
 
 const getCurrentDisplay = () => {
-  return parseInt(display.textContent);
+  return parseFloat(display.innerText);
 };
 
-const updateFinalResult = () => {
-  if (result === Infinity) {
-    display.textContent = "ERROR";
+const updateFinalResult = (val) => {
+  if (val === undefined) return;
+  if (val === Infinity) {
+    display.innerText = "ERROR";
     num1 = undefined;
   } else {
-    display.textContent = result;
+    display.innerText = result;
     num1 = result;
   }
   (num2 = undefined), (operation = undefined), (result = undefined);
@@ -87,23 +90,17 @@ const updateFinalResult = () => {
 
 const evaluate = () => {
   num2 = getCurrentDisplay();
-  switch (operation) {
-    case "+":
-      result = num1 + num2;
-      updateFinalResult();
-      break;
-    case "-":
-      result = num1 - num2;
-      updateFinalResult();
-      break;
-    case "*":
-      result = num1 * num2;
-      updateFinalResult();
-      break;
-    case "/":
-      result = num1 / num2;
-      updateFinalResult();
-      break;
+  result = operate(num1, num2, operation);
+  updateFinalResult(result);
+};
+
+const changeSign = () => {
+  let current = display.innerText;
+  if (current === "0") return;
+  if (current.startsWith("-")) {
+    display.innerText = current.slice(0);
+  } else {
+    display.innerText = `-${current}`;
   }
 };
 
@@ -112,3 +109,26 @@ subButton.addEventListener("click", subtract);
 multiplyButton.addEventListener("click", multiply);
 divideButton.addEventListener("click", divide);
 equalsButton.addEventListener("click", evaluate);
+signButton.addEventListener("click", changeSign);
+
+function operate (num1, num2, op) {
+  if ([...arguments].some(arg => arg === undefined)) return;
+
+  let mathResult;
+  switch (op) {
+    case "+":
+      mathResult = num1 + num2;
+      break;
+    case "-":
+      mathResult = num1 - num2;
+      break;
+    case "*":
+      mathResult = num1 * num2;
+      break;
+    case "/":
+      mathResult = num1 / num2;
+      break;
+  }
+  if (!Number.isInteger(mathResult)) return parseFloat(mathResult.toPrecision(8));
+  return mathResult;
+}
