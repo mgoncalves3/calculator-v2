@@ -25,6 +25,9 @@ const multiplyButton = document.getElementById("multiply");
 const divideButton = document.getElementById("divide");
 const equalsButton = document.getElementById("equals");
 const signButton = document.getElementById("sign");
+const decimalPointButton = document.getElementById("point");
+const exponentButton = document.getElementById("exponent");
+const sqrootButton = document.getElementById("sqroot");
 
 for (const button of numberButtons) {
   button.addEventListener("click", updateDisplay);
@@ -71,6 +74,18 @@ const divide = () => {
   defaultState = true;
 };
 
+const exponent = () => {
+  num1 = getCurrentDisplay();
+  operation = "**";
+  defaultState = true;
+}
+
+const sqroot = () => {
+  num1 = getCurrentDisplay();
+  operation = "sqroot"
+  defaultState = true;
+}
+
 const getCurrentDisplay = () => {
   return parseFloat(display.innerText);
 };
@@ -98,11 +113,21 @@ const changeSign = () => {
   let current = display.innerText;
   if (current === "0") return;
   if (current.startsWith("-")) {
-    display.innerText = current.slice(0);
+    display.innerText = current.slice(1);
   } else {
     display.innerText = `-${current}`;
   }
 };
+
+const decimalPoint = () => {
+  let currentDisplay = display.innerText;
+
+  if (currentDisplay.includes(".")) {
+    return;
+  }
+  display.innerText += ".";
+  defaultState = false;
+}
 
 addButton.addEventListener("click", add);
 subButton.addEventListener("click", subtract);
@@ -110,6 +135,9 @@ multiplyButton.addEventListener("click", multiply);
 divideButton.addEventListener("click", divide);
 equalsButton.addEventListener("click", evaluate);
 signButton.addEventListener("click", changeSign);
+decimalPointButton.addEventListener("click", decimalPoint);
+exponentButton.addEventListener("click", exponent)
+sqrootButton.addEventListener("click", sqroot);
 
 function operate (num1, num2, op) {
   if ([...arguments].some(arg => arg === undefined)) return;
@@ -127,6 +155,12 @@ function operate (num1, num2, op) {
       break;
     case "/":
       mathResult = num1 / num2;
+      break;
+    case "**":
+      mathResult = num1 ** num2;
+      break;
+    case "sqroot":
+      mathResult = Math.sqrt(num1);
       break;
   }
   if (!Number.isInteger(mathResult)) return parseFloat(mathResult.toPrecision(8));
