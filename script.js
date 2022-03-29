@@ -1,3 +1,5 @@
+let newDisplay = [];
+
 let updateDisplay = (e) => {
   let currentDisplay;
   if (result == undefined && defaultState) {
@@ -6,12 +8,13 @@ let updateDisplay = (e) => {
       display.innerText = "0";
       return;
     }
-    currentDisplay = ``;
-  } else {
-    currentDisplay = `${display.innerText}`;
+    // currentDisplay = ``;
   }
   defaultState = false;
-  display.innerText = `${currentDisplay}${e.target.value}`;
+  if (newDisplay.length < 12) {
+    newDisplay.push(e.target.value)
+  }
+  display.innerText = `${newDisplay.join("")}`;
 };
 
 let defaultState = true;
@@ -39,6 +42,7 @@ const reset = () => {
     (num2 = undefined),
     (operation = undefined),
     (result = undefined);
+    (newDisplay = [])
   defaultState = true;
 };
 
@@ -87,7 +91,9 @@ const sqroot = () => {
 }
 
 const getCurrentDisplay = () => {
-  return parseFloat(display.innerText);
+  let current = parseFloat(display.innerText);
+  newDisplay = []
+  return current;
 };
 
 const updateFinalResult = (val) => {
@@ -119,13 +125,12 @@ const changeSign = () => {
   }
 };
 
-const decimalPoint = () => {
-  let currentDisplay = display.innerText;
-
-  if (currentDisplay.includes(".")) {
+function decimalPoint() {
+  if (newDisplay.includes(".")) {
     return;
   }
-  display.innerText += ".";
+  newDisplay.push(".");
+  display.innerText = newDisplay.join("");
   defaultState = false;
 }
 
@@ -143,9 +148,12 @@ function operate (num1, num2, op) {
   if ([...arguments].some(arg => arg === undefined)) return;
 
   let mathResult;
+  let arr = []
   switch (op) {
     case "+":
       mathResult = num1 + num2;
+      
+      console.log(arr);
       break;
     case "-":
       mathResult = num1 - num2;
@@ -163,6 +171,7 @@ function operate (num1, num2, op) {
       mathResult = Math.sqrt(num1);
       break;
   }
-  if (!Number.isInteger(mathResult)) return parseFloat(mathResult.toPrecision(8));
+  if (!Number.isInteger(mathResult)) return parseFloat(mathResult.toPrecision(10));
+
   return mathResult;
 }
